@@ -1,1 +1,37 @@
-{\n  \"name\": \"your-project-name\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"start\": \"node index.js\",\n    \"dev\": \"nodemon index.js\",\n    \"test\": \"jest\",\n    \"lint\": \"eslint .\",\n    \"migrate\": \"your-migration-command\"\n  },\n  \"dependencies\": {\n    \"express\": \"^4.17.1\",\n    \"cors\": \"^2.8.5\",\n    \"dotenv\": \"^8.2.0\",\n    \"pg\": \"^8.5.1\",\n    \"bull\": \"^3.21.0\",\n    \"ioredis\": \"^4.17.3\",\n    \"jsonwebtoken\": \"^8.5.1\",\n    \"axios\": \"^0.21.1\",\n    \"swagger-ui-express\": \"^4.1.6\",\n    \"swagger-jsdoc\": \"^6.1.0\",\n    \"body-parser\": \"^1.19.0\",\n    \"bcryptjs\": \"^2.4.3\",\n    \"uuid\": \"^8.3.2\",\n    \"joi\": \"^17.4.0\",\n    \"helmet\": \"^4.5.0\",\n    \"morgan\": \"^1.10.0\",\n    \"express-rate-limit\": \"^5.3.0\",\n    \"redis\": \"^3.1.2\"\n  },\n  \"devDependencies\": {\n    \"nodemon\": \"^2.0.4\",\n    \"jest\": \"^26.6.0\",\n    \"supertest\": \"^6.1.3\",\n    \"eslint\": \"^7.14.0\"\n  }\n}
+{
+  "name": "saas-backend",
+  "version": "1.0.0",
+  "description": "SaaS Backend API built with Node.js and Express",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "migrate": "node migrations/migrate.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "pg": "^8.10.0",
+    "jsonwebtoken": "^9.0.0",
+    "axios": "^1.4.0",
+    "swagger-ui-express": "^5.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "body-parser": "^1.20.2",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^9.0.0",
+    "joi": "^17.9.2",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "express-rate-limit": "^6.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.44.0"
+  }
+}

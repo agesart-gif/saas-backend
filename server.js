@@ -1,90 +1,75 @@
 // server.js
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import rateLimit from 'express-rate-limit';
 
-const express = require('express');
-const http = require('http');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
-const jwt = require('jsonwebtoken');
-const jobQueue = require('./jobQueue'); // Assume we have a job queue setup
-const { chatbot } = require('./chatbot'); // Assume we have a chatbot module
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// Security middleware
 app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-// Rate limiting middleware
-const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
 });
-app.use('/api/', apiLimiter);
+app.use(limiter);
 
-// Swagger/OpenAPI documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Logging
+app.use(morgan('combined'));
 
-// JWT Authentication middleware
-app.use((req, res, next) => {
-    const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
-    if (token) {
-        jwt.verify(token, 'your_jwt_secret', (err, decoded) => {
-            if (err) return res.sendStatus(403);
-            req.user = decoded;
-            next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
+// Body parsing
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Health check
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Chatbot integration
-app.post('/api/chat', async (req, res) => {
-    try {
-        const response = await chatbot.getResponse(req.body.message);
-        res.json(response);
-    } catch (error) {
-        res.status(500).send('Error in chatbot operation');
-    }
+// AI Chatbot endpoint (placeholder)
+app.post('/chatbot', async (req, res) => {
+  const { message } = req.body;
+  if (!message) {
+    return res.status(400).json({ error: 'message is required' });
+  }
+  const aiResponse = `AI response to: ${message}`;
+  return res.json({ response: aiResponse });
 });
 
-// WhatsApp integration
-app.post('/api/whatsapp/send', async (req, res) => {
-    // Implementation to send WhatsApp message
+// WhatsApp Integration (placeholder)
+app.post('/whatsapp/send', async (req, res) => {
+  const { message, to } = req.body;
+  if (!message || !to) {
+    return res.status(400).json({ error: 'message and to are required' });
+  }
+  try {
+    console.log(`Sending message: "${message}" to WhatsApp number: ${to}`);
+    return res.json({ success: true, message: 'Message sent.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Failed to send message.' });
+  }
 });
 
-// Social Media Posting
-app.post('/api/social/post', async (req, res) => {
-    // Implementation to post on social media
-});
-
-// Job Queue
-app.post('/api/jobs', (req, res) => {
-    // Example job creation
-    const job = jobQueue.createJob(req.body);
-    res.status(201).send(job);
-});
-
-// Error handling
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
-// Graceful shutdown
-const server = http.createServer(app);
-process.on('SIGTERM', () => {
-    server.close(() => {
-        console.log('Server closed');
-    });
+// Social Media Posting (placeholder)
+app.post('/social-media/post', async (req, res) => {
+  const { message, platform } = req.body;
+  if (!message || !platform) {
+    return res.status(400).json({ error: 'message and platform are required' });
+  }
+  console.log(`Posting message: "${message}" to ${platform}`);
+  return res.json({ success: true, message: 'Post successful.' });
 });
 
 // Start server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
+
+export default app;

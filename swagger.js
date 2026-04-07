@@ -1,12 +1,11 @@
 // swagger.js
-
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 // Swagger definition
 const swaggerOptions = {
   definition: {
-    openapi: '3.0.0', // OpenAPI version
+    openapi: '3.0.0',
     info: {
       title: 'SaaS Backend API',
       version: '1.0.0',
@@ -19,16 +18,15 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:5000', // Your server URL
+        url: process.env.BASE_URL || 'http://localhost:3000',
       },
     ],
   },
-  apis: ['./routes/*.js'], // Path to the API docs
+  apis: ['./routes/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-module.exports = function(app) {
-  // Serve Swagger API documentation
+export default function setupSwagger(app) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-};
+}
