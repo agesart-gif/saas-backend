@@ -1,14 +1,10 @@
-# Node.js
 node_modules/
 .env
-
-# macOS
-.DS_Store
-
-# Logs
-logs/
+.env.local
+.env.*.local
+dist/
 *.log
 npm-debug.log*
-
-# Others
-package-lock.json
+.DS_Store
+.idea/
+.vscode/
